@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { useNavigate } from "react-router-dom";
 
 export function SignupPage() {
@@ -117,7 +118,8 @@ export function SignupPage() {
         
         <p className="mt-4 text-center text-blue-500 text-sm">
           Already have an account?{' '}
-          <a href="/login" className="text-blue-500 hover:underline">Login</a>
+          {/* <a href="/login" className="text-blue-500 hover:underline">Login</a> */}
+          <Link to="/login" className="text-blue-500 hover:underline">Login</Link>
         </p>
       </div>
     </div>
