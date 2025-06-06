@@ -27,7 +27,7 @@ const MyRecipes = () => {
   // Delete a recipe by id
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5001/recipe/delete/${id}`, {
+      await axios.delete(`https://cookbackend-umfm.onrender.com/recipe/delete/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMyRecipes((prev) => prev.filter((recipe) => recipe._id !== id));
