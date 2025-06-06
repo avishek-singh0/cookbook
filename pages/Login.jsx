@@ -14,7 +14,7 @@ export function LoginPage() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5001/user/login', {
+      const response = await fetch('https://cookbackend-umfm.onrender.com/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
