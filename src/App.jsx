@@ -19,20 +19,8 @@ function App() {
         <Route path="/login" element={<LoginPage/>} />
         <Route path="/signup" element={<SignupPage />} />
 
-         {/* <Route path="/" element={<Home />} />
-         <Route path="/favorites" element={<Favorites/>} />
-        <Route path="/all-recipes" element={<AllRecipes />} />
-        <Route path="/my-recipes" element={<MyRecipes/>} />
-         */}
-
-         {/* <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          
-          <Route path="/my-recipes" element={<MyRecipes />} />
-          <Route path="/all-recipes" element={<AllRecipes />} />
-          <Route path="/fav" element={<Favourite />} />
-        </Route> */}
-        <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
+         
+   <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
   <Route path="/" element={<Home />} />
   <Route path="/my-recipes" element={<MyRecipes />} />
   <Route path="/all-recipes" element={<AllRecipes />} />
@@ -42,14 +30,6 @@ function App() {
 
 
 
-         {/* <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
-          }
-        /> */}
       </Routes>
     </Router>
   );
