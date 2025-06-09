@@ -26,7 +26,7 @@ export function SignupPage() {
     setError('');
 
     try {
-      const response = await fetch('https://cookbackend-umfm.onrender.com/user/signup', {
+      const response = await fetch('https://cookbackend-umfm.onrender.com/user/sign', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
