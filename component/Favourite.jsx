@@ -15,7 +15,7 @@ export default function Favourite() {
       });
       console.log('Fetched favorites:', res.data);
       // const favIds = res.data.map((r) => r._id); 
-      // console.log(favIds)// Adjust based on backend structure
+     
       setFavorites(res.data);
     } catch (error) {
       console.error('Error fetching favorites:', error);
@@ -23,7 +23,7 @@ export default function Favourite() {
   };
 
   useEffect(() => {
-    // fetchAllRecipes();
+ 
     fetchFavorites();
   }, []);
 
