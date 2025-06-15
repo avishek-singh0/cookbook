@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { RecipeList } from './RecipeList'; // Your existing recipe card component
-import CreateRecipe from './CreateRecipe';
-import { AllRecipes } from './AllRecipes';
+
 const MyRecipes = () => {
   const [myRecipes, setMyRecipes] = useState([]);
   const token = localStorage.getItem('token');
@@ -38,9 +37,9 @@ const MyRecipes = () => {
     
   return (
     <div className="min-h-screen bg-gray-800 text-white">
+      
       <div className="container mx-auto px-4 py-8">
-   {/* Create Recipe Component */}
-  <CreateRecipe/>
+  
         {/* Recipe List with Delete buttons */}
      <RecipeList
   recipes={myRecipes}

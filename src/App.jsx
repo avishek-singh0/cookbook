@@ -11,6 +11,8 @@ import { AllRecipes } from '../component/AllRecipes';
 import  MyRecipes  from '../component/MyRecipes';
 import { MainLayout } from '../layout/MainLayout';
 import Favourite from '../component/Favourite';
+import CreateRecipe from '../component/CreateRecipe';
+import RecipeDetail from '../component/RecipeDetail';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
   <Route path="/my-recipes" element={<MyRecipes />} />
   <Route path="/all-recipes" element={<AllRecipes />} />
   <Route path="/fav" element={<Favourite />} />
+  <Route path="/add" element={<CreateRecipe/>} />
+  <Route path="/recipe/:id" element={<RecipeDetail />} />
 </Route>
 
 
