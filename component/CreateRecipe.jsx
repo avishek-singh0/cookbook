@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+// import RichTextEditor from './QuillEditor';
+
+import  QuillEditor  from './QuillEditor';
+// Make sure this path is correct
 
 const CreateRecipe = () => {
   const [recipe, setRecipe] = useState({
@@ -11,9 +15,7 @@ const CreateRecipe = () => {
 
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-
-  const containerRef = useRef(null);  // ref for container wrapping input + suggestions
-
+  const containerRef = useRef(null); // ref for recipe name + suggestions container
   const token = localStorage.getItem('token');
 
   const handleSubmit = async (e) => {
@@ -22,6 +24,8 @@ const CreateRecipe = () => {
       ...recipe,
       ingredients: recipe.ingredients.split(',').map(i => i.trim())
     };
+     
+ 
 
     try {
       await axios.post('https://cookbackend-umfm.onrender.com/recipe/create', payload, {
@@ -68,83 +72,90 @@ const CreateRecipe = () => {
     setShowSuggestions(false);
   };
 
-  // This will handle clicks outside the input + suggestions container to close the dropdown
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
         setShowSuggestions(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-800 p-4 rounded-md space-y-3 mb-6">
+    <form onSubmit={handleSubmit} className="bg-gray-800 p-4 rounded-md space-y-6 mb-6">
       <h2 className="text-white font-semibold text-lg">Add New Recipe</h2>
-      <div className="grid md:grid-cols-4 gap-3 relative" ref={containerRef}>
-        <div className="relative col-span-1">
-          <input
-            type="text"
-            placeholder="Name of the Recipe"
-            value={recipe.name}
-            onChange={(e) => setRecipe({ ...recipe, name: e.target.value })}
-            required
-            className="p-2 w-full rounded border border-black text-black"
-            onFocus={() => setShowSuggestions(true)}
-            // Remove onBlur handler entirely
-          />
-          {showSuggestions && suggestions.length > 0 && (
-            <ul className="absolute z-10 bg-white text-black border border-gray-300 w-full rounded mt-1 max-h-40 overflow-y-auto">
-              {suggestions.map((s) => (
-                <li
-                  key={s.id}
-                  className="p-2 hover:bg-gray-200 cursor-pointer"
-                  onMouseDown={() => handleSuggestionClick(s.title)}
-                >
-                  {s.title}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
 
+      {/* Recipe Name */}
+      <div ref={containerRef} className="relative">
+        <label className="text-white block mb-1 font-medium">Recipe Name</label>
         <input
           type="text"
-          placeholder="Instructions"
-          value={recipe.instructions}
-          onChange={(e) => setRecipe({ ...recipe, instructions: e.target.value })}
+          placeholder="Name of the Recipe"
+          value={recipe.name}
+          onChange={(e) => setRecipe({ ...recipe, name: e.target.value })}
           required
-          className="p-2 rounded border border-black text-black"
+          className="p-2 w-full rounded border border-black text-black"
+          onFocus={() => setShowSuggestions(true)}
         />
-        <input
-          type="url"
-          placeholder="Thumbnail URL"
-          value={recipe.thumbnail}
-          onChange={(e) => setRecipe({ ...recipe, thumbnail: e.target.value })}
-          required
-          className="p-2 rounded border border-black text-black"
-        />
-        <input
-          type="text"
-          placeholder="Ingredients (comma-separated)"
-          value={recipe.ingredients}
-          onChange={(e) => setRecipe({ ...recipe, ingredients: e.target.value })}
-          required
-          className="p-2 rounded border border-black text-black"
-        />
+        {showSuggestions && suggestions.length > 0 && (
+          <ul className="absolute z-10 bg-white text-black border border-gray-300 w-full rounded mt-1 max-h-40 overflow-y-auto">
+            {suggestions.map((s) => (
+              <li
+                key={s.id}
+                className="p-2 hover:bg-gray-200 cursor-pointer"
+                onMouseDown={() => handleSuggestionClick(s.title)}
+              >
+                {s.title}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      <button
-        type="submit"
-        className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white font-semibold"
-      >
-        Create
-      </button>
+      {/* Instructions */}
+      <QuillEditor
+  value={recipe.instructions}
+  onChange={(val) => setRecipe({ ...recipe, instructions: val })}
+  placeholder="Write instructions here..."
+/>
+
+      {/* Thumbnail & Ingredients */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <label className="text-white block mb-1 font-medium">Thumbnail URL</label>
+          <input
+            type="url"
+            placeholder="Thumbnail URL"
+            value={recipe.thumbnail}
+            onChange={(e) => setRecipe({ ...recipe, thumbnail: e.target.value })}
+            required
+            className="p-2 w-full rounded border border-black text-black"
+          />
+        </div>
+        <div>
+          <label className="text-white block mb-1 font-medium">Ingredients</label>
+          <input
+            type="text"
+            placeholder="Ingredients (comma-separated)"
+            value={recipe.ingredients}
+            onChange={(e) => setRecipe({ ...recipe, ingredients: e.target.value })}
+            required
+            className="p-2 w-full rounded border border-black text-black"
+          />
+        </div>
+      </div>
+
+      {/* Submit */}
+      <div className="pt-4">
+        <button
+          type="submit"
+          className="bg-green-600 hover:bg-green-700 px-6 py-2 rounded text-white font-semibold"
+        >
+          Create
+        </button>
+      </div>
     </form>
   );
 };

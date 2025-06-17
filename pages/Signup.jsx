@@ -4,9 +4,11 @@ import axios from "axios";
 
 export function SignupPage() {
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -22,11 +24,26 @@ export function SignupPage() {
 
       if (resData.token) {
         localStorage.setItem('token', resData.token);
+        navigate('/login');
       }
-
-      navigate('/login');
     } catch (err) {
-      alert(err.response?.data?.message || "Registration failed");
+      const errorData = err.response?.data;
+
+      if (errorData?.errors) {
+        // 🧠 Show each Zod error under the correct field
+        errorData.errors.forEach((zodErr) => {
+          setError(zodErr.path, {
+            type: 'server',
+            message: zodErr.message,
+          });
+        });
+      } else {
+        // 🧠 Generic backend error
+        setError("email", {
+          type: "server",
+          message: errorData?.message || "Registration failed",
+        });
+      }
     }
   };
 
@@ -40,7 +57,10 @@ export function SignupPage() {
             <label className="block text-gray-700 mb-2">Full Name</label>
             <input
               type="text"
-              {...register("name", { required: "Name is required", minLength: 2 })}
+              {...register("name", {
+                required: "Name is required",
+                minLength: { value: 2, message: "Name must be at least 2 characters" }
+              })}
               className="w-full p-2 border rounded border-gray-950 text-black"
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
@@ -60,7 +80,10 @@ export function SignupPage() {
             <label className="block text-gray-700 mb-2">Password</label>
             <input
               type="password"
-              {...register("password", { required: "Password is required", minLength: 6 })}
+              {...register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Password must be at least 6 characters" }
+              })}
               className="w-full p-2 border rounded border-gray-950 text-black"
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}

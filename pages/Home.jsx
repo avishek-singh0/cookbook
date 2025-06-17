@@ -1,28 +1,23 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import SearchBar from '../component/SerachBar';
 import { AllRecipes } from '../component/AllRecipes';
+import SearchBar from '../component/SerachBar';
+import axios from 'axios';
+
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);
   const [filtered, setFiltered] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get('https://cookbackend-umfm.onrender.com/recipe/all');
-        if (response.data.status === 'success') {
-          setRecipes(response.data.data.recipes);
-          setFiltered(response.data.data.recipes);
-        } else {
-          throw new Error(response.data.message || 'Failed to fetch recipes');
+        const res = await axios.get('https://cookbackend-umfm.onrender.com/recipe/all');
+        if (res.data.status === 'success') {
+          setRecipes(res.data.data.recipes);
+          setFiltered(res.data.data.recipes);
         }
       } catch (err) {
-        setError(err.message || 'Something went wrong');
-      } finally {
-        setLoading(false);
+        console.error("Failed to fetch recipes:", err);
       }
     };
 
@@ -30,17 +25,19 @@ const Home = () => {
   }, []);
 
   const handleSearch = (query) => {
-    const result = recipes.filter(recipe =>
+    const filteredData = recipes.filter(recipe =>
       recipe.name.toLowerCase().includes(query.toLowerCase())
     );
-    setFiltered(result);
+    setFiltered(filteredData);
   };
 
   return (
     <div className="min-h-screen bg-gray-800">
       <main className="container mx-auto px-4 py-6">
+        
         <SearchBar onSearch={handleSearch} placeholder="Search for recipes..." />
-        <AllRecipes recipes={filtered} loading={loading} error={error} />
+        <AllRecipes recipes={filtered} />
+        
       </main>
     </div>
   );

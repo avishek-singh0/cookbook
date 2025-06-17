@@ -8,6 +8,7 @@ export function LoginPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -23,11 +24,26 @@ export function LoginPage() {
 
       if (resData.token) {
         localStorage.setItem('token', resData.token);
+        navigate('/');
       }
-
-      navigate('/');
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      const errorData = err.response?.data;
+
+      if (errorData?.errors) {
+        // Handle Zod field errors
+        errorData.errors.forEach((zodErr) => {
+          setError(zodErr.path, {
+            type: 'server',
+            message: zodErr.message,
+          });
+        });
+      } else {
+        // Fallback error (e.g. invalid credentials)
+        setError("email", {
+          type: "server",
+          message: errorData?.message || "Login failed",
+        });
+      }
     }
   };
 
@@ -37,6 +53,7 @@ export function LoginPage() {
         <h1 className="text-5xl text-gray-900 font-bold mb-6 text-center">Login</h1>
 
         <form onSubmit={handleSubmit(onSubmit)}>
+
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Email</label>
             <input
